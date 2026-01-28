@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="utils.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Cart</title>
+</head>
+
+<body>
+    <div class="container is-max-desktop">
+        <div class="block holder">
+
+            <div class="block products">
+                <h3 class="title is-3">Products</h3>
+
+                <div class="table-scroll">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="hide">Photo</th>
+                                <th>Title</th>
+                                <th>Price</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="block cart">
+                <h3 class="title is-3">Cart</h3>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="total"></div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        //console.log(url);
+        let products = []
+        let cart = []
+
+        function renderProductTable(data) {
+            products = data
+            console.log(data);
+            document.querySelector('.products tbody').innerHTML = products.map(obj =>
+                `
+             <tr>
+                <td class="hide">
+                    <figure class="image is-32x32">
+                        <img src="${obj.thumbnail}" />
+                    </figure>
+                </td>
+                <td>${obj.title}</td>
+                <td>${obj.price}</td>
+                <td>  <button class="button is-primary is-light" onclick="addToCart(${obj.id})">
+                        <i class="fa-solid fa-arrow-right" ></i>
+                    </button>
+                </td>
+            </tr>
+            `
+            ).join("")
+
+
+        }
+
+        getData(url, renderProductTable)
+
+        //eseménykezeló fg.:
+        function addToCart(id){
+            console.log(id);
+            const product=products.find(obj=>obj.id==id)
+            console.log(product);
+            const existingProduct=cart.find(obj=>obj.id==id)
+            if(existingProduct) existingProduct.quantity+=1
+            else cart.push({...product,quantity:1})
+            renderCart()   
+            document.querySelector('.total').innerHTML=`Total price:${calculateTotalWithDiscount(cart).toFixed(2)} € `       
+        }
+
+        function renderCart(){
+            document.querySelector('.cart tbody').innerHTML=cart.map(obj=>`
+            <tr>
+                <td>${obj.title}</td>
+                <td>${obj.price}</td>
+                <td>${obj.quantity}</td>
+            </tr>
+            `).join("")
+        }
+
+    </script>
+</body>
+
+</html>
